@@ -1,3 +1,5 @@
+package com.example.android_logger
+
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -10,20 +12,27 @@ class AppInstallLogger : BroadcastReceiver() {
         if (intent?.action == Intent.ACTION_PACKAGE_ADDED) {
             val packageName = intent.data?.encodedSchemeSpecificPart
             val appName = getInstalledAppName(context, packageName)
-            Log.d("AppInstallLogger", "Installed: $appName ($packageName)")
+            Log.d("com.example.android_logger.AppInstallLogger", "Installed: $appName ($packageName)")
         }
     }
 
+
+
     private fun getInstalledAppName(context: Context?, packageName: String?): String {
-        val packageManager = context?.packageManager
+        // Check if context is not null before accessing packageManager
+        val packageManager = context?.packageManager ?: return "Unknown"
+
         val applicationInfo: ApplicationInfo? = packageName?.let {
             try {
-                packageManager?.getApplicationInfo(it, 0)
+                packageManager.getApplicationInfo(it, 0)
             } catch (e: PackageManager.NameNotFoundException) {
                 null
             }
         }
+
         return applicationInfo?.loadLabel(packageManager).toString()
     }
+
+
 
 }
